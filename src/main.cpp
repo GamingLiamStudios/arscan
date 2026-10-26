@@ -3,7 +3,7 @@
 
 #include "ui/MainWindow.hpp"
 #include "ui/AuthModal.hpp"
-#include "ui/SaneDevicesModel.hpp"
+#include "ui/SaneDeviceSelector.hpp"
 
 #include <sane/sane.h>
 
@@ -27,41 +27,18 @@ int main(int argc, char *argv[])
     }
 
     // List devices
-    // In your MainWindow or ScanSettingsPanel
-    QDialog devicesDialog;
-
-    SaneDevicesModel *model    = new SaneDevicesModel(&devicesDialog);
-    QListView        *listView = new QListView(&devicesDialog);
-
-    listView->setModel(model);
-
     // Load detected SANE devices into the model
     const SANE_Device **sane_devs = nullptr;
-    if (sane_get_devices(&sane_devs, SANE_FALSE) == SANE_STATUS_GOOD)
-    {
-        model->setDevices(sane_devs);
-    }
+    sane_get_devices(&sane_devs, SANE_FALSE);
 
-    // Handle device selection
-    QObject::connect(
-      listView->selectionModel(),
-      &QItemSelectionModel::currentChanged,
-      &devicesDialog,
-      [model](const QModelIndex &current, const QModelIndex &previous)
-      {
-          const SaneDeviceInfo &selectedDev = model->getDevice(current.row());
-          if (selectedDev != SaneDeviceInfo::INVALID_DEVICE)
-          {
-              qDebug() << "Selected scanner:" << selectedDev.name;
-              // Proceed with sane_open(selectedDev->name, &handle)
-          }
-      });
+    SaneDeviceSelector selector(sane_devs);
 
-    devicesDialog.setWindowTitle("Available Devices");
-    devicesDialog.show();
+    selector.setWindowTitle("Available Devices");
+    selector.setMinimumSize(320, 240);
+    selector.show();
 
-    MainWindow mainWindow;
-    mainWindow.show();
+    // MainWindow mainWindow;
+    // mainWindow.show();
 
     qInfo() << "Hello World!";
 

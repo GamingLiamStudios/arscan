@@ -24,13 +24,15 @@ sources = files(
   'src/main.cpp',
   'src/ui/MainWindow.cpp',
   'src/ui/AuthModal.cpp',
-  'src/ui/SaneDevicesModel.cpp',
+  'src/ui/SaneListDevices.cpp',
+  'src/ui/SaneDeviceSelector.cpp',
 )
 
 moc_headers = [
   'src/ui/MainWindow.hpp',
   'src/ui/AuthModal.hpp',
-  'src/ui/SaneDevicesModel.hpp',
+  'src/ui/SaneListDevices.hpp',
+  'src/ui/SaneDeviceSelector.hpp',
 ]
 sources += qt6.preprocess(
   moc_headers: moc_headers,

@@ -15,7 +15,10 @@ void AuthModal::saneCallback(SANE_String_Const resource, SANE_Char *username, SA
     AuthModal modal((qResource));
     modal.show();
 
-    modal.exec();    // Block UI until resolved
+    if (modal.exec() == QDialog::Accepted)
+    {
+        // Set username and password before return
+    }
 }
 
 AuthModal::AuthModal(const QString &resource)
